@@ -19,6 +19,7 @@ class Exercise(db.Model):
             raise ValueError("Exercise name cannot be empty.")
         return value
 
+
 class Workout(db.Model):
     __tablename__ = 'workouts'
 
@@ -35,12 +36,14 @@ class Workout(db.Model):
             raise ValueError("Workout duration must be at least 1 minute.")
         return value
 
+
 class WorkoutExercise(db.Model):
     __tablename__ = 'workout_exercises'
 
     id = db.Column(db.Integer, primary_key=True)
     workout_id = db.Column(db.Integer, db.ForeignKey('workouts.id'), nullable=False)
     exercise_id = db.Column(db.Integer, db.ForeignKey('exercises.id'), nullable=False)
+
     reps = db.Column(db.Integer)
     sets = db.Column(db.Integer)
     duration_seconds = db.Column(db.Integer)
@@ -51,3 +54,21 @@ class WorkoutExercise(db.Model):
     __table_args__ = (
         db.UniqueConstraint('workout_id', 'exercise_id', name='unique_workout_exercise'),
     )
+
+    @validates('reps', 'sets', 'duration_seconds')
+    def validate_metrics(self, key, value):
+        
+        return value
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.validate_complete(self)
+
+    @staticmethod
+    def validate_complete(instance):
+        if (
+            instance.reps is None and
+            instance.sets is None and
+            instance.duration_seconds is None
+        ):
+            raise ValueError("At least one of reps, sets, or duration_seconds must be provided.")
