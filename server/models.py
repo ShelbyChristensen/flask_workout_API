@@ -12,3 +12,9 @@ class Exercise(db.Model):
     equipment_needed = db.Column(db.Boolean, nullable=False)
 
     workout_exercises = db.relationship('WorkoutExercise', back_populates='exercise')
+
+    @validates('name')
+    def validate_name(self, key, value):
+        if not value or value.strip() == "":
+            raise ValueError("Exercise name cannot be empty.")
+        return value
