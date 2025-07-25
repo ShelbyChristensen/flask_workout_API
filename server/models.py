@@ -18,3 +18,19 @@ class Exercise(db.Model):
         if not value or value.strip() == "":
             raise ValueError("Exercise name cannot be empty.")
         return value
+
+class Workout(db.Model):
+    __tablename__ = 'workouts'
+
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date, nullable=False)
+    duration_minutes = db.Column(db.Integer, nullable=False)
+    notes = db.Column(db.Text)
+
+    workout_exercises = db.relationship('WorkoutExercise', back_populates='workout')
+
+    @validates('duration_minutes')
+    def validate_duration(self, key, value):
+        if value < 1:
+            raise ValueError("Workout duration must be at least 1 minute.")
+        return value
