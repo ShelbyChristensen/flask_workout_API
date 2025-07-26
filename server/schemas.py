@@ -1,5 +1,6 @@
 from marshmallow import Schema, fields, validates, ValidationError
-from models import Workout, Exercise, WorkoutExercise
+from server.models import Workout, Exercise, WorkoutExercise
+
 
 class ExerciseSchema(Schema):
     id = fields.Int(dump_only=True)
